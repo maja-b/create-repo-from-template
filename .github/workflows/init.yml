@@ -18,17 +18,11 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v1.5.0
-      with:
-        # SDK version to use. Examples: 2.2.104, 3.1, 3.1.x
-        dotnet-version: 3.1.x
-    
-    - name: Generate project
-      run: dotnet new webapi --name ${{ github.event.repository.name }}
-     
-    - name: Generate test project
-      run: dotnet new xunit --name ${{ github.event.repository.name }}.UnitTests
+    - name: Run script file
+      run: |
+         chmod +x ./scripts/test.sh
+         .scripts/test.sh
+      shell: bash
     
     - name: Git Commit/Push Changes
       uses: actions-x/commit@v1
