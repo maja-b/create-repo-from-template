@@ -1,0 +1,16 @@
+{
+  "project": {
+    "name": "SL  Project",
+    "slug": "sl-project",
+    "themes": {
+      "parent": {
+        "name": "sl-theme",
+        "textdomain": "sl-theme"
+      },
+      "child": {
+        "name": "sl-child",
+        "textdomain": "sl-child"
+      }
+    }
+  }
+}
