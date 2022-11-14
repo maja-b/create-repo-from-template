@@ -1,0 +1,35 @@
+mkdir <<[var.project.name]>>
+cd <<[var.project.name]>>
+git clone https://github.com/signelazer/<<[var.project.slug]>>.git .
+wp core download --skip-content
+wp config create --dbname=project-name --dbuser=root --dbpass= --dbhost=localhost --dbprefix=project-name_ --extra-php < wp-config-addons.php
+wp config set WP_DEBUG true
+wp db create
+wp core install --url=https://<<[var.project.slug]>>.test --title="<<[var.project.name]>>" --admin_user=signelazer --admin_password=Mali++sl++bran33 --admin_email=dev@signelazer.com
+wp user create maja maja.signelazer@gmail.com --user_pass=V9i47Nj4tYQk8Xs --role=administrator --user_nicename=maja --display_name=Maja --first_name=Maja --last_name=Baczko
+wp user create chloe chloe@signelazer.com --user_pass=Wm7Vj2WsY72k --role=administrator --user_nicename=chloe --display_name=Chloé --first_name=Chloé --last_name=Martin
+wp user create ludo ludovic.signelazer@gmail.com --user_pass=Mali++sl++bran33 --role=administrator --user_nicename=ludo --display_name=Ludo --first_name=Ludovic --last_name=Lenoir
+wp theme activate <<[var.project.themes.child.name]>>
+wp option update permalink_structure /%%postname%%/
+wp rewrite structure /%%postname%%/
+wp option update date_format "__('D d F Y')"
+wp option update timezone_string "Europe/Brussels"
+wp option update time_format "H:i"
+wp option update start_of_week 1
+wp plugin install admin-menu-editor amazon-s3-and-cloudfront custom-post-type-ui duplicate-page ewww-image-optimizer ninja-forms redux-framework user-role-editor user-switching wp-dropzone --activate
+composer require pivvenit/acf-pro-installer
+y
+wp site empty --yes
+wp post create --post_type=page --post_status=publish --post_title="Accueil"
+wp post create --post_type=page --post_status=draft --post_title="Politique de confidentialité"
+wp option update page_on_front 1
+wp option update show_on_front page
+wp option update wp_page_for_privacy_policy 2
+wp post create --post_type=page --post_status=publish --post_title="Style Guide"
+wp post create --post_type=page --post_status=publish --post_title="Layouts library"
+cd wp-content\themes\<<[var.project.themes.parent.name]>>
+y
+composer require timber/timber
+npm install
+npm run build
+npm run watch
