@@ -15,14 +15,15 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@main
-
-    - name: Run script file
-      run: |
-         chmod +x ./.github/scripts/test.sh
-         ./.github/scripts/test.sh
-      shell: bash
-    
-    - name: Git Commit/Push Changes
-      uses: actions-x/commit@v1
+    - uses: franzbischoff/replace_envs@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.DEV_TOKEN }}
+        PROJECT_NAME: 'SL PROJECT'
+        PROJECT_SLUG: 'sl-project'        
+        THEME_NAME: 'sl-theme'        
+        CHILD_THEME_NAME: 'sl-child'
+      with:
+        from_file: 'index.html'
+        to_file: 'index.html'
+        commit: 'true'
