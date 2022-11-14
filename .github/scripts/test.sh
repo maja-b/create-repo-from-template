@@ -10,7 +10,7 @@ do
          -o "${input_file}" \
          --left-delim "<<[" \
          --right-delim "]>>" \
-         -c var=./github/scripts/customize.json
+         -c var=./customize.json
   fi
 done
 
