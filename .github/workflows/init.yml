@@ -1,29 +1,51 @@
-name: Init Project
+name: Create Repo
+on:
+  workflow_dispatch:
+    inputs:
+      repo-name:
+        description: 'Name of the repository to be created'
+        required: true
+        default: ''
+      project-name:
+        description: 'Name of the project'
+        required: true
+        default: ''
+      project-slug:
+        description: 'Slug of the project'
+        required: true
+        default: ''
+      theme-name:
+        description: 'Parent theme name'
+        required: true
+        default: ''
+      child-name:
+        description: 'Child theme name'
+        required: true
+        default: ''
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
-on: create
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    if: github.ref == 'refs/heads/main'
-    
-    # The type of runner that the job will run on
+  create-repository:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    name: Creating Organization Repository
     steps:
-    - uses: actions/checkout@main
-    - uses: franzbischoff/replace_envs@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.DEV_TOKEN }}
-        PROJECT_NAME: 'SL PROJECT'
-        PROJECT_SLUG: 'sl-project'        
-        THEME_NAME: 'sl-theme'        
-        CHILD_THEME_NAME: 'sl-child'
-      with:
-        from_file: 'index.html'
-        to_file: 'index.html'
-        commit: 'true'
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+      - name: Creating GitHub Organization Repository
+        uses: repo-ctrl/create-repo-action@main
+        id: create-repo
+        with:
+          repo-name: '${{ github.event.inputs.repo-name }}'
+          # org-admin-token: '${{ secrets.ORG_ADMIN_TOKEN }}'
+      - name: Log URL to the repo
+        run: echo "The new repo is ${{ steps.create-repo.outputs.repo-url }}"
+      - name: Replace Variables
+        uses: falnyr/replace-env-vars-action@master
+        env:
+          PROJECT_NAME: "${{ github.event.inputs.project-name }}"
+          PROJECT_SLUG: "${{ github.event.inputs.project-slug }}"
+          THEME_NAME: "${{ github.event.inputs.theme-name }}"
+          CHILD_THEME_NAME: "${{ github.event.inputs.child-name }}"
+        with:
+          filename: index.html
+
+
