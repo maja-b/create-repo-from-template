@@ -1,16 +1,16 @@
-
-ignore_files=".git|.github|.gtignore|customize.json|README.md"
+#!/usr/bin/env bash
+ignore_files=".git|.gitignore|customize.json|README.md"
 
 for input_file in `tree -I "${ignore_files}" -Ffai --noreport`
 do
   if [ ! -d "${input_file}" ]; then
     echo "Processing file: ${input_file}"
-    gomplate \
-         -f "${input_file}" \
-         -o "${input_file}" \
-         --left-delim "<<[" \
-         --right-delim "]>>" \
-         -c var=./customize.json
+    gomplate 
+         --file "${input_file}"
+         --out "${input_file}"
+         --left-delim "<<["
+         --right-delim "]>>"
+         -c var=./github/scripts/customize.json
   fi
 done
 
