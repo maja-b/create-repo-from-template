@@ -1,51 +1,19 @@
-name: Create Repo
-on:
-  workflow_dispatch:
-    inputs:
-      repo-name:
-        description: 'Name of the repository to be created'
-        required: true
-        default: ''
-      project-name:
-        description: 'Name of the project'
-        required: true
-        default: ''
-      project-slug:
-        description: 'Slug of the project'
-        required: true
-        default: ''
-      theme-name:
-        description: 'Parent theme name'
-        required: true
-        default: ''
-      child-name:
-        description: 'Child theme name'
-        required: true
-        default: ''
+name: Initialize Repo
+on: workflow_dispatch
 
 jobs:
-  create-repository:
+  build:
     runs-on: ubuntu-latest
-    name: Creating Organization Repository
+    name: Replacing Repository variables
     steps:
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-      - name: Creating GitHub Organization Repository
-        uses: repo-ctrl/create-repo-action@main
-        id: create-repo
-        with:
-          repo-name: '${{ github.event.inputs.repo-name }}'
-          # org-admin-token: '${{ secrets.ORG_ADMIN_TOKEN }}'
-      - name: Log URL to the repo
-        run: echo "The new repo is ${{ steps.create-repo.outputs.repo-url }}"
-      - name: Replace Variables
-        uses: falnyr/replace-env-vars-action@master
+      - uses: actions/checkout@v3
+      - uses: jason-dour/action-setup-gomplate@v1.0.0
         env:
-          PROJECT_NAME: "${{ github.event.inputs.project-name }}"
-          PROJECT_SLUG: "${{ github.event.inputs.project-slug }}"
-          THEME_NAME: "${{ github.event.inputs.theme-name }}"
-          CHILD_THEME_NAME: "${{ github.event.inputs.child-name }}"
-        with:
-          filename: index.html
-
-
+          GITHUB_TOKEN: ${{ secrets.DEV_TOKEN }}
+      - run: gomplate --version
+      
+      - name: Run script file
+        run: |
+           chmod +x ./github/scripts/test.sh
+           ./github/scripts/test.sh
+        shell: bash
