@@ -1,5 +1,23 @@
 name: Initialize Repo
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      project-name:
+        description: 'Name of the project'
+        required: true
+        default: ''
+      project-slug:
+        description: 'Slug of the project'
+        required: true
+        default: ''
+      theme-name:
+        description: 'Parent theme name'
+        required: true
+        default: ''
+      child-name:
+        description: 'Child theme name'
+        required: true
+        default: ''
 
 jobs:
   build:
@@ -11,9 +29,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.DEV_TOKEN }}
       - run: gomplate --version
-      
+
       - name: Run script file
         run: |
-           chmod +x ./github/scripts/test.sh
-           ./github/scripts/test.sh
+          find ./ -type f -exec sed -i -e 's/<<[var.project.name]>>/${{ github.event.inputs.project-name }}/g' {} \;
         shell: bash
